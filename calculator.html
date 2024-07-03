@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
+    <title>Interactive Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,39 +18,121 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            text-align: center;
         }
-        .calculator input, .calculator button {
+        .calculator input {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            font-size: 16px;
+            font-size: 18px;
+            text-align: right;
         }
         .calculator button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            width: 22%;
+            padding: 10px;
+            margin: 5px 1%;
+            font-size: 18px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
             cursor: pointer;
         }
-        .calculator button:hover {
+        .calculator button.operator {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .calculator button.equals {
             background-color: #45a049;
+            color: white;
+        }
+        .calculator button.clear {
+            background-color: #f44336;
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <h2>Simple Calculator</h2>
-        <input type="number" id="num1" placeholder="Enter first number">
-        <input type="number" id="num2" placeholder="Enter second number">
-        <select id="operation">
-            <option value="add">Addition</option>
-            <option value="subtract">Subtraction</option>
-            <option value="multiply">Multiplication</option>
-            <option value="divide">Division</option>
-        </select>
-        <button onclick="calculate()">Calculate</button>
-        <h3 id="result">Result: </h3>
+        <input type="text" id="display" disabled>
+        <div>
+            <button onclick="clearDisplay()" class="clear">C</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="chooseOperation('+')" class="operator">+</button>
+        </div>
+        <div>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="chooseOperation('-')" class="operator">-</button>
+        </div>
+        <div>
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="chooseOperation('*')" class="operator">&times;</button>
+        </div>
+        <div>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="chooseOperation('/')" class="operator">÷</button>
+            <button onclick="calculate()" class="equals">=</button>
+        </div>
     </div>
-    <script src="calculator.js">
-    </script>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = undefined;
+
+        function appendNumber(number) {
+            display.value = display.value.toString() + number.toString();
+        }
+
+        function clearDisplay() {
+            display.value = '';
+            currentOperand = '';
+            previousOperand = '';
+            operation = undefined;
+        }
+
+        function chooseOperation(op) {
+            if (display.value === '') return;
+            if (previousOperand !== '') {
+                calculate();
+            }
+            operation = op;
+            previousOperand = display.value;
+            display.value = '';
+        }
+
+        function calculate() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(display.value);
+            if (isNaN(prev) || isNaN(current)) return;
+
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            display.value = computation;
+            operation = undefined;
+            previousOperand = '';
+        }
+    </script >
 </body>
 </html>
